@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Blog{% endblock %}</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .main-carousel-box {
+            height: 300px;
+            /* border: 1px solid #000; */
+            overflow: hidden;
+        }
+    
+        .main-carousel-box img {
+            width: 100%;
+            /* height: 300px; */
+            object-fit: cover;
+        }
+        .carousel-box {
+            height: 300px;
+            /* border: 1px solid #000; */
+            overflow: hidden;
+        }
+    
+        .carousel-box img {
+            width: 100%;
+            height: 300px;
+            object-fit: contain;
+        }
+        .card-box {
+            height: 220px;
+            /* border: 1px solid #000; */
+            overflow: hidden;
+        }
+    
+        .card-box img {
+            width: 100%;
+            /* height: 200px; */
+            object-fit: contain;
+        }
+
+        .hidden-checkbox{
+            display: none;
+        }
+
+        #search-form-toggle:checked + .search-form {
+            display: block;
+        }
+
+        .search-form {
+            display: none;
+        }
+
+        .custom-text-decoration{
+            text-decoration: none;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark mx-auto" style="background-color: burlywood; font-family: Georgia, 'Times New Roman', Times, serif;">
+    <div class="container">
+        <a class="navbar-brand" href="/">Blog</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/add/">Add Blog</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="/search/">Search</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout/">Logout</a>
+                </li>
+                <li class="nav-item">
+                    <label for="search-form-toggle" class="nav-link">
+                        <i class="fa fa-search"></i>
+                    </label>
+                </li>
+                <input type="checkbox" id="search-form-toggle" class="hidden-checkbox">
+                <div class="search-form">
+                    <form action="/search/" method="GET" class="form-inline">
+                        <div class="input-group">
+                            <input type="text" name="query" placeholder="Search..." class="form-control">
+                            <!-- <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-search"></i> <!-- Font Awesome search icon -->
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>    
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{% block content%}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <!-- <div class="card mb-4" > -->
+                <div id="mycarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        {% for blog in blogs %}
+                            {% if forloop.counter == 1 %}
+                            <button type="button" data-bs-target="#mycarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+                            {% else %}
+                            <button type="button" data-bs-target="#mycarousel" data-bs-slide-to="{{ forloop.counter0 }}"></button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                        <div class="carousel-inner" >
+                            {% for blog in blogs %}
+                                {% if forloop.counter == random_integer %}
+                                    <div class="carousel-item active">
+                                {% else %}
+                                    <div class="carousel-item">
+                                {% endif %}
+                                {% with blog.images.first as i%}
+                                    <a href="/blog/{{blog.id}}/">
+                                        <div class="main-carousel-box">
+                                        <img class="img-fluid d-block"  src="{{ i.pic.url }}" alt="blog img">
+                                        </div>
+                                    </a>
+                                {% endwith %}
+                                <div class="carousel-caption d-md-block ">
+                                    <h5>{{blog.title}}</h5>
+                                    <!-- <p>Some representative placeholder content for the second slide.</p> -->
+                                  </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    
+                    <!-- Carousel Controls -->
+                    <a class="carousel-control-prev" href="#mycarousel" role="button" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#mycarousel" role="button" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </a>
+                </div>
+            <!-- </div> -->
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container mt-4">
+    <!-- Recent Blog Posts -->
+    <h2>Recent Blog Posts</h2>
+    <div class="row">
+        <!-- Mock Blog Post 1 -->
+        {% for blog in blogs %}
+        <div class="col-md-4 ">
+            <a href="/blog/{{ blog.id }}" style="text-decoration: none;">
+                <div class="card mb-4 mx-auto" style="background-color:rgba(222, 184, 135, 0.18); height: 95%; width: 92%;">
+                    <div class="card-box">
+                    {% with blog.images.first as blog_image %}
+                    <img src="{{blog_image.pic.url}}" class="card-img-top" alt="Blog" >
+                    {% endwith %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{blog.title}}</h5>
+                        <p class="card-text">{{blog.date}}<br>Author: {{blog.author}}</p>
+                        <!-- <p class="card-text">{{blog.desc}}</p> -->
+                        <!-- <a href="/blog/{{ blog.id}}/" class="btn btn-primary">Read More</a> -->
+
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- <div class="container mt-4">
+    <h2>Featured</h2>
+    Featured Blog Post
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="carousel-box">
+                {% with featured.images.first as blog_image %}
+                <img src="{{blog_image.pic.url}}" class="card-img-top" alt="Featured Blog">
+                {% endwith %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{featured.title}}</h5>
+                    <p class="card-text">Published: {{featured.date}}<br>Author: {{featured.author}}</p>
+                    <a href="/blog/{{ featured.id }}/" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+{% endblock%}
+
+<footer style="background-color: burlywood;">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 pt-5">
+                <h2 class="h2 border-bottom pb-3 border-light logo" style="color: white;">Blog</h2>
+                <ul class="list-unstyled text-light footer-link-list">
+                    <li>
+                        <i class="fas fa-map-marker-alt fa-fw"></i>
+                        123 Consectetur at ligula 10660
+                    </li>
+                    <li>
+                        <i class="fa fa-phone fa-fw"></i>
+                        <a class="custom-text-decoration" href="tel:010-020-0340">010-020-0340</a>
+                    </li>
+                    <li>
+                        <i class="fa fa-envelope fa-fw"></i>
+                        <a class="custom-text-decoration" href="mailto:info@company.com">info@company.com</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 pt-5">
+                <h2 class="h2 text-light border-bottom pb-3 border-light">Links</h2>
+                <ul class="list-unstyled text-light footer-link-list">
+                    <li><a class="custom-text-decoration" href="{% url 'default'%}"}">Home</a></li>
+                    <li><a class="custom-text-decoration" href="{% url 'add'%}">Add Blog</a></li>
+                    <!-- <li><a class="custom-text-decoration" href="{% url 'search'%}">Search</a></li> -->
+                    <li><a class="custom-text-decoration" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="row text-light mb-4">
+            <div class="col-12 mb-3">
+                <div class="w-100 my-3 border-top border-light"></div>
+            </div>
+            <div class="col-auto me-auto">
+                <ul class="list-inline text-left footer-icons">
+                    <li class="list-inline-item border border-light rounded-circle text-center">
+                        <a class="text-light custom-text-decoration" target="_blank" href="http://facebook.com/"><i class="fab fa-facebook-f fa-lg fa-fw"></i></a>
+                    </li>
+                    <li class="list-inline-item border border-light rounded-circle text-center">
+                        <a class="text-light custom-text-decoration" target="_blank" href="https://www.instagram.com/"><i class="fab fa-instagram fa-lg fa-fw"></i></a>
+                    </li>
+                    <li class="list-inline-item border border-light rounded-circle text-center">
+                        <a class="text-light custom-text-decoration" target="_blank" href="https://twitter.com/"><i class="fab fa-twitter fa-lg fa-fw"></i></a>
+                    </li>
+                    <li class="list-inline-item border border-light rounded-circle text-center">
+                        <a class="text-light custom-text-decoration" target="_blank" href="https://www.linkedin.com/"><i class="fab fa-linkedin fa-lg fa-fw"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-auto">
+                <label class="sr-only" for="subscribeEmail">Email address</label>
+                <div class="input-group mb-2">
+                    <input type="text" class="form-control border-light" id="subscribeEmail" placeholder="Email address">
+                    <div class="input-group-text btn-success text-dark">Subscribe</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-100 py-3">
+        <div class="container">
+            <div class="row pt-2">
+                <div class="col-12">
+                    <p class="text-left text-light">
+                        Copyright &copy; 2023 Company Name 
+                        | Designed by <a rel="sponsored" href="#" target="_blank">Zunair Mustafa</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- Include Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

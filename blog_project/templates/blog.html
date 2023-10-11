@@ -1,0 +1,67 @@
+{% extends 'home.html' %}
+
+
+{% block title %}{{ blog.title }} - Family Blog{% endblock %}
+
+{% block content %}
+{% if deleteme is None %}
+
+
+<div class="container mt-4">
+    <!-- Single Blog Post -->
+    <!-- <div class="row" > -->
+        <div id="mycarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                {% for i in blog_images %}
+                    {% if forloop.counter == 1 %}
+                    <button type="button" data-bs-target="#mycarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+                    {% else %}
+                    <button type="button" data-bs-target="#mycarousel" data-bs-slide-to="{{ forloop.counter0 }}"></button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="carousel-box">
+                <div class="carousel-inner" >
+                    {% for i in blog_images %}
+                    {% if forloop.counter == 1 %}
+                    <div class="carousel-item active">
+                    {% else %}
+                    <div class="carousel-item">
+                    {% endif %}
+                    <img class="img-fluid d-block"  src="{{ i.pic.url }}" alt="blog img">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Carousel Controls -->
+            <a class="carousel-control-prev" href="#mycarousel" role="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#mycarousel" role="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </a>
+        </div>
+
+    <br>
+    <h2>{{ blog.title }}</h2>
+    <div class="col-md " >
+            <div class="card mb-4 mx-auto" style="padding: 5px;background-color:rgba(222, 184, 135, 0.18)">
+                    <p>Published: {{ blog.date }}<br>Author: {{ blog.author }}</p>
+                    <!-- Include the detailed content of the blog post here -->
+                    <div>{{ blog.Content | linebreaks }}</div><br>
+            </div>
+    </div>
+    {% if request.user.is_staff %}
+    <form method="post" action="">
+        {% csrf_token %}
+        <button style="border: white ;background-color: burlywood;" type="submit" name="delete" class="btn btn-primary">Delete this blog</button>
+    </form><br><br>
+    {% endif %}
+</div>
+{% else %}
+    {% include 'confirm-delete.html' %}
+{% endif %}
+{% endblock%}

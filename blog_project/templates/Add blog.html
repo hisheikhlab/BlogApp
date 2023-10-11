@@ -1,0 +1,33 @@
+{% extends 'home.html' %}
+
+
+{% block title %}Add Blog{% endblock %}
+
+{% block content %}
+<!-- Add Blog Form -->
+<div class="container mt-4">
+    <h2>Add a Blog</h2>
+    <form method="post" enctype="multipart/form-data" action="">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="tt" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="ds" rows="2" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Content</label>
+            <textarea class="form-control" id="content" name="cn" rows="4" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Image</label>
+            <input type="file" class="form-control" id="image" name="im" multiple required>
+        </div>
+        <button style="border: white ;background-color: burlywood;" type="submit" class="btn btn-primary">Submit</button>
+        <br><br>
+    </form>
+</div>
+
+{% endblock%}

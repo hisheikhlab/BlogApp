@@ -1,0 +1,31 @@
+{% extends 'home.html' %}
+
+
+{% block title %}Search - Blog{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Recent Blog Posts -->
+    <h2>Search results for "{{query}}"</h2>
+    <div class="row">
+        <!-- Mock Blog Post 1 -->
+        {% for result in results %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                {% with result.images.first as i %}
+                <img src="{{i.pic.url}}" style="padding-left: 20px; padding-top: 20px" width="30%" height="auto" alt="Blog 1">
+                {% endwith %}
+                <div class="card-body">
+                    <h5 class="card-title">{{result.title}}</h5>
+                    <p class="card-text">Published: {{result.date}}</p>
+                    <a style="border: white ;background-color: burlywood;" href="/blog/{{ result.id}}/" class="btn btn-primary">Read More</a>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock%}
