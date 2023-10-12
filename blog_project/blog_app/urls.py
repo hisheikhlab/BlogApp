@@ -19,6 +19,7 @@ from django.urls import path, include
 from .import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 
 urlpatterns = [
     path('', views.default, name='default'),
@@ -30,4 +31,12 @@ urlpatterns = [
     path('home/<str:user_id>/', views.home, name='home'),
     path('blog/<int:blog_id>/', views.blog, name='blog'),
     path('search/', views.search, name='search'),
+    path('reset_password/', PasswordResetView.as_view(template_name='paswordreset.html',), name='reset_password'),
+    path('password_reset_done/', PasswordResetDoneView.as_view(template_name='paswordreset.html',
+                                                               extra_context={'reset_status' : 'done'},), name='password_reset_done'),
+    path('password_reset_confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(template_name='paswordreset.html',
+                                                               extra_context={'reset_status' : 'confirm'},), name='password_reset_confirm'),
+    path('password_reset_complete/', PasswordResetCompleteView.as_view(template_name='paswordreset.html',
+                                                               extra_context={'reset_status' : 'complete'},), name='password_reset_complete'),
+
 ]

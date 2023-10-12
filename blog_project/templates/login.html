@@ -42,15 +42,16 @@
               <div class="card mb-4 mx-auto" style="background-color:rgba(222, 184, 135, 0.18); ">
                   <div class="card-box mx-auto" style="width: 95%;">
                     <br>
-                    <span>Enter details</span><br><br>
                     {% block content %}
+                    <span>Enter details</span><br><br>
                     <form method="post" action="{% url 'login' %}">
                       {% csrf_token %}
                         <input type="text" placeholder="username" class="form-control" name="user" required><br>
                         <input type="password" placeholder="password" class="form-control" name="pas" required><br>
                         <button style="border-color: white;background-color: burlywood ;" class="btn btn-primary" type="submit" name="log" >Login</button>
                         Don't have an account?
-                        <a href="/signup/" style="color: darkgoldenrod;">Register here.</a>
+                        <a href="/signup/" style="color: darkgoldenrod;">Register here.</a><br><br>
+                        <a href="/reset_password/" style="color: darkgoldenrod;">Forgot password?</a>
                     </form><br>
                     {% endblock %}
                   </div>
