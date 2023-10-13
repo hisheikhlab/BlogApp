@@ -11,16 +11,17 @@ import jwt
 
 
 def default(request):
-    if request.user.is_authenticated:
-        return redirect('home', user_id=jwt.encode({'id': request.user.id}, "secret", algorithm="HS256"))
-    else:
-        return render(request, 'login.html')
+    return redirect('home')
+    # if request.user.is_authenticated:
+    #     return redirect('home')
+    # else:
+    #     return render(request, 'login.html')
 
 
 def log(request):
     print(request.method)
     if request.user.is_authenticated:
-        return redirect('home', user_id=jwt.encode({'id': request.user.id}, "secret", algorithm="HS256"))
+        return redirect('home')
     if request.method == 'POST':
         usr = request.POST['user']
         pas = request.POST['pas']
@@ -28,7 +29,7 @@ def log(request):
         print(usr)
         if user is not None:
             login(request, user)
-            return redirect('home', user_id=jwt.encode({'id': request.user.id}, "secret", algorithm="HS256"))
+            return redirect('home')
         elif user is None:
             return render(request, 'login.html', {"mess": "Username or password incorrect"})
     return render(request, 'login.html')
@@ -36,7 +37,7 @@ def log(request):
 
 def logou(request):
     logout(request)
-    return redirect('login')
+    return redirect('home')
 
 
 @login_required(login_url='login')
@@ -60,11 +61,10 @@ def delete(request):
             # print(request.POST['confirm_delete'])
             to_delete = BlogPost.objects.get(id=request.POST['confirm_delete'])
             to_delete.delete()
-            return redirect("home", user_id=jwt.encode({'id': request.user.id}, "secret", algorithm="HS256"))
+            return redirect("home")
     return render(request, 'Add blog.html')
 
 
-@login_required(login_url='login')
 def blog(request, blog_id):
     blog_this = BlogPost.objects.get(id=blog_id)
     if request.method == 'POST':
@@ -73,23 +73,19 @@ def blog(request, blog_id):
     return render(request, 'blog.html', {'blog': blog_this})
 
 
-@login_required(login_url='login')
-def home(request, user_id):
-    dec_id = jwt.decode(user_id, "secret", algorithms=["HS256"])
-    if dec_id['id'] == request.user.id:
-        blogs = BlogPost.objects.order_by('-date')
-        random_integer = random.randint(1, len(blogs))
-        featured_blog = random.choice(blogs)
-        return render(request, 'home.html', {'blogs': blogs,
-                                             'featured': featured_blog,
-                                             'random_integer': random_integer})
-    else:
-        return redirect("logout")
+def home(request):
+    blogs = BlogPost.objects.order_by('-date')
+    random_integer = random.randint(1, len(blogs))
+    featured_blog = random.choice(blogs)
+    return render(request, 'home.html', {'blogs': blogs,
+                                            'featured': featured_blog,
+                                            'random_integer': random_integer,})
+    # return redirect("logonut")
 
 
 def signup(request):
     if request.user.is_authenticated:
-        return redirect('home', user_id=jwt.encode({'id': request.user.id}, "secret", algorithm="HS256"))
+        return redirect('home')
     if request.method == 'POST':
         user = request.POST['user']
         em = request.POST['em']
@@ -103,7 +99,6 @@ def signup(request):
     return render(request, 'signup.html')
 
 
-@login_required(login_url='login')
 def search(request):
     if "query" in request.GET:
         query = request.GET['query']
